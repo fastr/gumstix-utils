@@ -1,0 +1,43 @@
+#!/bin/bash
+#http://www.gumstix.net/Setup-and-Programming/view/Overo-Setup-and-Programming/Creating-a-bootable-microSD-card/111.html
+
+# set this script to exit at any point an operation returns failure
+set -e
+
+DEV=$1
+DEFAULT_DEV=/dev/mmcblk0
+IS_OVERO=`cat /proc/cpuinfo | grep Overo || true`
+IS_MMCBLK=`echo ${DEV} | grep /dev/mmcblk || true`
+
+if [ ! -n "${DEV}" ]
+then
+  if [ -n "${IS_OVERO}" ]
+  then
+    echo "About to format (DESTROY data) ${DEFAULT_DEV}"
+    DEV=${DEFAULT_DEV}
+    echo "CTRL+C now if that's not what you wanted..."
+    sleep 3
+    echo "continuing..."
+  else
+    echo -n 'Usage: `'$0' /dev/MICRO_SDHC_BLOCK_DEVICE`'
+    exit 1;
+  fi
+fi
+
+# About the target system
+# Matches mmcblk0p1 disk0s1 sdf1 - OpenEmbedded, Ubuntu, BSD
+BOOT=${DEV}'*1'
+ROOT=${DEV}'*2'
+
+# Attempt to ensure that the disk is not in use
+umount $DEV* 2>/dev/null || true
+umount $DEV* 2>/dev/null || true
+
+# Prepare FAT boot partition
+# MLO *must* be installed first
+mkfs.vfat -F 32 $BOOT -n FAT
+
+# Prepare rootfs
+mkfs.ext3 ${ROOT}
+
+echo "formatted sd card successfully"

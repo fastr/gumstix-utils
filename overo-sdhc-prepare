@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+if [ ! "root" == `whoami` ]
+then
+  echo "Usage: sudo $0 $@"
+  exit 1
+fi
+
+partition-overo-sdhc $@
+read -p "*Remove* and *Reinsert* the SDHC card!     (then press a key *after* you do that)"
+format-overo-sdhc $@
+popullate-overo-sdhc $@

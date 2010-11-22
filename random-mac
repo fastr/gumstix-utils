@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+(function () {
+  var chars = "0123456789ABCDEF",
+    string_length = process.argv[2] || '8',
+    mac_addr = '00', // Always start with 00
+    i,
+    j,
+    rnum;
+
+  for (i = 0; i < 5; i += 1) {
+    mac_addr += ':';
+    for (j = 0; j < 2; j += 1) {
+      rnum = Math.floor(Math.random() * chars.length);
+      mac_addr += chars.substring(rnum,rnum+1);
+    }
+  }
+  console.log(mac_addr);
+}());
