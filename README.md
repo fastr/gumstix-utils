@@ -6,6 +6,16 @@ A collection of scripts and such for Gumstix / OpenEmbedded development.
     * also sets a random MAC address (useful if you have your own boards and haven't set a MAC in the ROM)
   * `overo-sdhc-prepare` - all of the above
 
+  * `overo-mixin-secret-sauce` - untar the base root image and add an overlay
+
+Usage
+====
+
+  0. edit the scripts to match your directory structure
+    * the variables you should modify are up at the top of each script
+  0. copy the scripts into `/usr/local/bin`
+  0. use away
+
 TODO
 ----
 
