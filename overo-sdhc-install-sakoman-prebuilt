@@ -14,7 +14,7 @@ then
   exit 1
 fi
 
-if [ ! "desktop" == "${SYSTEM}"]
+if [ "desktop" != "${SYSTEM}" ]
 then
   SYSTEM="console"
 fi

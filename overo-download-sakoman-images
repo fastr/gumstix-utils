@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+LATEST=${1}
+SYSTEM=${2}
+
+if [ ! -n "${LATEST}" ]
+then
+  LATEST=201011150741
+fi
+
+if [ "desktop" != "${SYSTEM}" ]
+then
+  SYSTEM="console"
+fi
+
+MACHINE="overo"
+URL="http://www.sakoman.com/feeds/omap3/glibc/images/${MACHINE}/${LATEST}"
+mkdir -p "${MACHINE}/${LATEST}"
+cd "${MACHINE}/${LATEST}"
+wget "${URL}/md5sum.txt"
+wget "${URL}/${MACHINE}-oe-commit-id.txt"
+wget "${URL}/x-load-${MACHINE}-${LATEST}.bin.ift"
+wget "${URL}/MLO-${MACHINE}-${LATEST}"
+wget "${URL}/u-boot-${MACHINE}-${LATEST}.bin"
+wget "${URL}/uImage-${MACHINE}-${LATEST}.bin"
+wget "${URL}/omap3-${SYSTEM}-image-${MACHINE}-${LATEST}.tar.bz2"
