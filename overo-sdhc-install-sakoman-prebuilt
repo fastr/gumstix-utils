@@ -1,0 +1,40 @@
+#!/bin/bash
+set -e
+
+FOLDER=${1}
+DEVICE=${2}
+SYSTEM=${3}
+TMPDIR="/tmp/overo-`random-string`"
+
+
+if [ ! -n "${DEVICE}" ] || [ ! -n "${FOLDER}" ] || [ ! "root" == "`whoami`" ]
+then
+  echo "Usage: sudo ${0} SAKOMAN_DATED_IMAGE_FOLDER /dev/SDX [ desktop | console (default) ]"
+  echo "Example: sudo ${0} 201011150741 /dev/sdi console"
+  exit 1
+fi
+
+if [ ! "desktop" == "${SYSTEM}"]
+then
+  SYSTEM="console"
+fi
+
+# TODO strip trailing slash
+
+cd ${FOLDER}
+overo-sdhc-partition ${DEVICE}
+read -p "*Remove* and *Reinsert* the SDHC card!     (then press a key *after* you do that)"
+overo-sdhc-format ${DEVICE}
+mkdir -p ${TMPDIR}
+mount ${DEVICE}1 ${TMPDIR}
+echo "Copying boot files (should only take a few seconds)"
+cp MLO-overo-${FOLDER} ${TMPDIR}/MLO
+cp u-boot-overo-${FOLDER}.bin ${TMPDIR}/u-boot.bin
+cp uImage-overo-${FOLDER}.bin ${TMPDIR}/uImage
+sync
+umount ${TMPDIR}
+mount ${DEVICE}2 ${TMPDIR}
+echo "Copying ${SYSTEM} image files (may take several minutes)"
+tar xf omap3-${SYSTEM}-image-overo-${FOLDER}.tar.bz2 -C ${TMPDIR}
+umount ${DEVICE}2
+rmdir ${TMPDIR}
