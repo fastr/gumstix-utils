@@ -82,6 +82,11 @@ umount $BOOT 2>/dev/null || true # overo auto-mounts in /media sometimes
 # Prepare rootfs
 mount ${ROOT} ${MNT}
 rsync -avh ${ROOT_PATH}/ ${MNT}/
+echo "What IP address shall we assign to the poor sap?"
+echo "(you'll still need to modify other network info in '/etc/network/interfaces')"
+echo "Example: 192.168.1.15"
+read IP
+sed -i "s/IP_ADDR_HERE/${IP}/g" ${MNT}/etc/network/interfaces
 
 # Configure rootfs with any special sauce we might need
 
@@ -97,7 +102,7 @@ rm -rf $MNT
 sync
 sync
 #echo 1 > /proc/sys/kernel/sysrq
-rmdir /mnt/tmp_* 2> /dev/null
+rmdir /mnt/tmp_* 2> /dev/null || true
 
 echo "popullated sd card successfully"
 
