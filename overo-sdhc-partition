@@ -57,19 +57,29 @@ r
 n
 p
 1
-1
+
 +32M
-t
-c
-a
-1
 n
 p
 2
-6
 
+
+t
+1
+c
+a
+1
 w
 EOF
+
+# Add different partition schemes
+#
+#n - new partition
+#p - primary
+#3 - 3rd
+#  - blank or start cyl
+#  - blank, end cyl, or +xG
+
 # The return of this process is almost always false due to that the kernel cannot resync the
 # partition table.
 # A reboot (on the overo) or unplugging and replugging the sdhc (on a Linux box)
