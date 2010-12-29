@@ -4,24 +4,26 @@
 # set this script to exit at any point an operation returns failure
 set -e
 
+source settings.env
+
 
 # Where ~/overo-oe can be found
-BOOT_PATH=/home/shared/overo-boot-image
-ROOT_PATH=/home/shared/overo-root-image
+BOOT_PATH=${U_IMAGE_BOOT}
+ROOT_PATH=${U_IMAGE_ROOT}
 MAC_ADDR=`random-mac`
 
 # Boot options
-export MLO=${BOOT_PATH}/MLO
-export UBOOT=${BOOT_PATH}/u-boot.bin
-export UIMAGE=${BOOT_PATH}/uImage
+MLO=${BOOT_PATH}/MLO
+UBOOT=${BOOT_PATH}/u-boot.bin
+UIMAGE=${BOOT_PATH}/uImage
 
 # Create the environment for this script
-export MNT=/mnt/tmp_`random-string`
+MNT=/mnt/tmp_`random-string`
 
 # NOTE /dev/shm is way faster but may not be available once the filesystem size is large
 # TODO TMDIR should not be allowed to be MNT
 # TODO this script should not run from MNT
-export TMPDIR=/dev/shm
+TMPDIR=/dev/shm
 
 
 DEV=$1
@@ -76,7 +78,7 @@ sed "s/MAC_ADDR/${MAC_ADDR}/g" ${BOOT_PATH}/bootscript.tpl > ${BOOT_CMD}
 mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n "bootscript" -d ${BOOT_CMD} ${MNT}/boot.scr
 
 echo "sync-ing boot... this may take several seconds"
-umount $MNT
+umount ${MNT}
 umount $BOOT 2>/dev/null || true # overo auto-mounts in /media sometimes
 
 # Prepare rootfs
@@ -92,11 +94,11 @@ sed -i "s/IP_ADDR_HERE/${IP}/g" ${MNT}/etc/network/interfaces
 
 # sync and umount
 echo "sync-ing root... this may take several minutes"
-umount $MNT
+umount ${MNT}
 umount $ROOT 2>/dev/null || true
 
 # Cleanup any mess we made 
-rm -rf $MNT
+rm -rf ${MNT}
 
 # sync and reboot!
 sync

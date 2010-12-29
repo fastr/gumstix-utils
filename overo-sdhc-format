@@ -4,6 +4,8 @@
 # set this script to exit at any point an operation returns failure
 set -e
 
+source settings.env
+
 DEV=$1
 DEFAULT_DEV=/dev/mmcblk0
 IS_OVERO=`cat /proc/cpuinfo | grep Overo || true`

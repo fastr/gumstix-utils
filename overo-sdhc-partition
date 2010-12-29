@@ -5,6 +5,8 @@
 # set this script to exit at any point an operation returns failure
 set -e
 
+source settings.env
+
 # Create the environment for this script
 DEV=$1
 DEFAULT_DEV=/dev/mmcblk0
@@ -63,7 +65,7 @@ n
 p
 2
 
-
+${U_SDHC_ROOT_SIZE}
 t
 1
 c
