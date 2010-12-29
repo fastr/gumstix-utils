@@ -14,7 +14,7 @@ Creating an installable image with your own secret sauce
   * `overo-image-pre-overlay` - dummy script (does nothing): customize this yourself
   * `overo-image-create-overlay` - dummy script (does nothing): customize this yourself
   * `overo-image-apply-overlay` - copies your overlay to the target directory
-  * `overo-image-preprae` - all of the above
+  * `overo-image-prepare` - all of the above
 
 Creating an SDHC card
 
