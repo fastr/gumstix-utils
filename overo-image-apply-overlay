@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+source settings.env
+
+overo-image-create-overlay
+sudo rsync -a --exclude='.git' --exclude='.svn' ${U_IMAGE_SAUCE}/ ${U_IMAGE_ROOT}/
+sudo chmod go-rwx -R ${U_IMAGE_ROOT}/home/root/ # for .ssh
+sudo chown root:root -R ${U_IMAGE_ROOT}/home/root/ ${U_IMAGE_ROOT}/etc/
+
+echo "Probably Successful. No known errors."

@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e
+
+source settings.env
+
+MSG='##########
+
+NOTE: Replace '${0}' with your own prep script!!!
+
+##########
+
+In this script you should delete any files that you do not want in the production system.
+
+For example, there are services that I use for development and remote debugging,
+but I generally don'\''t want them to start on startup, so I remove all startup scripts.
+
+    * rm ${U_IMAGE_ROOT}/etc/{rc3.d,rc4.d,rc5.d} -rf
+
+In my secret-sauce overlay I add back in the ones that I do want running in the production system.
+
+
+Occasionally, you may also wish to include a build-date file or something of that nature
+which doesn'\''t make sense to put in your secret-sauce overlay..
+'
+
+echo "${MSG}"

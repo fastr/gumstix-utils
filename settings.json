@@ -1,0 +1,6 @@
+{
+  "oe_home": "/mnt/local/overo-coolaj86",
+  "image_root": "/home/shared/overo-root-image",
+  "image_boot": "/home/shared/overo-boot-image",
+  "sauce_dir": "/home/coolaj86/overo-system-overlay"
+}

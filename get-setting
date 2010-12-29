@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+(function () {
+  "use strict";
+
+  var fs = require('fs'),
+    settings = JSON.parse(fs.readFileSync('./settings.json', 'utf-8')),
+    path = process.argv[2],
+    setting = settings[path];
+
+  console.log(setting);
+}());

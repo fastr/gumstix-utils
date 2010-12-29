@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+
+source settings.env
+
+MSG='##########
+
+NOTE: Replace '${0}' with your own prep script!!!
+
+##########
+
+In this script you should generate any files that should be included in the production system,
+but are not easy to include in a bitbake package.
+
+For example:
+
+I pre-set the root password and use an authorized public ssh key on all of my systems which allow me to remote in.
+I use a special template for `/etc/network/interfaces`.
+I also git-pull from a repository to build the latest version of some proprietary binaries for inclusion.
+
+    * /home/root/.ssh
+    * /etc/passwd
+    * /etc/network/interfaces
+    * /usr/local/
+    * /opt/coolaj86/bin
+
+These files should be place in '${U_IMAGE_SAUCE}'
+'
+
+echo "${MSG}"

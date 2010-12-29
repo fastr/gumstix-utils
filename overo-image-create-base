@@ -1,0 +1,67 @@
+#!/bin/bash
+set -e
+
+source settings.env
+
+if [ -n "${1}" ]
+then
+  U_OE_IMAGE=${1}
+fi
+
+if [ ! -n "${U_OE_HOME}" ] || [ ! -n "${U_OE_IMAGE}" ] || [ ! -n "${U_OE_IMAGE_DIR}" ] || [ ! -n "${U_IMAGE_ROOT}" ]  || [ ! -n "${U_IMAGE_BOOT}" ]
+then
+  echo '${U_OE_HOME} or ${U_OE_IMAGE} or ${U_IMAGE_ROOT} or ${U_IMAGE_BOOT} is not set'
+  exit 1
+fi
+
+
+cd ${U_OE_HOME}/
+
+
+# Building the bitbake image
+echo "Building bitbake image."
+echo "This takes several hours the first time, but (usually) just a few minutes any subsequent time"
+bitbake ${U_OE_IMAGE} 
+echo ""
+echo "Finished building ${U_OE_IMAGE}"
+echo ""
+
+
+# Building the bitbake boot files
+echo "Building bitbake boot files."
+echo "This should take a mere minute or two"
+bitbake x-load u-boot-omap3 virtual/kernel
+echo ""
+echo "Finished building boot files"
+echo ""
+
+
+# Create system Image
+# TODO ask for confirmation a mistake with 'rm -rf' would be a disaster
+echo "Recreating the root partition base (overlay must be added again afterwards)"
+echo "This shouldn't take more than a minute on a hard drive"
+echo "sudo rm -rf ${U_IMAGE_ROOT}"
+sudo rm -rf ${U_IMAGE_ROOT}
+sudo mkdir -p ${U_IMAGE_ROOT}
+sudo tar xf ${U_OE_IMAGE_DIR}/${U_OE_IMAGE}-${U_OE_MACHINE}.tar.bz2 -C ${U_IMAGE_ROOT}/
+echo ""
+echo "Finished copying root files to ${U_IMAGE_ROOT}"
+echo ""
+
+
+# Create boot Image
+echo "Recreating the boot partition base"
+echo "This should take a mere second or two"
+echo "sudo rm -rf ${U_IMAGE_BOOT}"
+sudo rm -rf ${U_IMAGE_BOOT}
+sudo mkdir -p ${U_IMAGE_BOOT}
+sudo cp ${U_OE_IMAGE_DIR}/MLO-${U_OE_MACHINE} ${U_IMAGE_BOOT}/MLO 
+sudo cp ${U_OE_IMAGE_DIR}/u-boot-${U_OE_MACHINE}.bin ${U_IMAGE_BOOT}/u-boot.bin
+sudo cp ${U_OE_IMAGE_DIR}/uImage-${U_OE_MACHINE}.bin ${U_IMAGE_BOOT}/uImage
+sudo cp mkbootscript ${U_IMAGE_BOOT}/
+sudo cp bootscript.tpl ${U_IMAGE_BOOT}/
+echo ""
+echo "Finished copying boot files to ${U_IMAGE_BOOT}"
+echo ""
+
+overo-image-pre-overlay

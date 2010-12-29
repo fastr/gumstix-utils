@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+overo-image-create-base # also runs overo-image-pre-overlay
+overo-image-apply-overlay # also runs overo-image-create-overlay
