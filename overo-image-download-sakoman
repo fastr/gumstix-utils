@@ -1,12 +1,14 @@
 #!/bin/bash
 set -e
 
+source settings.env
+
 LATEST=${1}
 SYSTEM=${2}
 
 if [ ! -n "${LATEST}" ]
 then
-  LATEST=201011150741
+  LATEST="${U_SAKOMAN_LATEST}"
 fi
 
 if [ "desktop" != "${SYSTEM}" ]
@@ -14,10 +16,11 @@ then
   SYSTEM="console"
 fi
 
-MACHINE="overo"
+MACHINE=${U_OE_MACHINE}
 URL="http://www.sakoman.com/feeds/omap3/glibc/images/${MACHINE}/${LATEST}"
-mkdir -p "${MACHINE}/${LATEST}"
-cd "${MACHINE}/${LATEST}"
+mkdir -p "${U_SAKOMAN_PATH}/${MACHINE}/${LATEST}"
+
+cd "${U_SAKOMAN_PATH}/${MACHINE}/${LATEST}"
 wget "${URL}/md5sum.txt"
 wget "${URL}/${MACHINE}-oe-commit-id.txt"
 wget "${URL}/x-load-${MACHINE}-${LATEST}.bin.ift"
