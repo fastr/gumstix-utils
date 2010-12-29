@@ -17,7 +17,6 @@ fi
 
 cd ${U_OE_HOME}/
 
-
 # Building the bitbake image
 echo "Building bitbake image."
 echo "This takes several hours the first time, but (usually) just a few minutes any subsequent time"
@@ -34,6 +33,8 @@ bitbake x-load u-boot-omap3 virtual/kernel
 echo ""
 echo "Finished building boot files"
 echo ""
+
+cd -
 
 
 # Create system Image
