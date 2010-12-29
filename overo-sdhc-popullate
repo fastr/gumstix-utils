@@ -6,6 +6,14 @@ set -e
 
 source settings.env
 
+if [ ! -n "${U_UNIT_IP}" ]
+then
+  echo "Which IP Address to give to this unit?"
+  echo "(you'll still need to modify other network info in '/etc/network/interfaces')"
+  echo "Example: 192.168.1.20"
+  read U_UNIT_IP
+fi
+
 
 # Where ~/overo-oe can be found
 BOOT_PATH=${U_IMAGE_BOOT}
@@ -84,11 +92,7 @@ umount $BOOT 2>/dev/null || true # overo auto-mounts in /media sometimes
 # Prepare rootfs
 mount ${ROOT} ${MNT}
 rsync -avh ${ROOT_PATH}/ ${MNT}/
-echo "What IP address shall we assign to the poor sap?"
-echo "(you'll still need to modify other network info in '/etc/network/interfaces')"
-echo "Example: 192.168.1.15"
-read IP
-sed -i "s/IP_ADDR_HERE/${IP}/g" ${MNT}/etc/network/interfaces
+sed -i "s/IP_ADDR_HERE/${U_UNIT_IP}/g" ${MNT}/etc/network/interfaces
 
 # Configure rootfs with any special sauce we might need
 

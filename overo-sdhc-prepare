@@ -2,10 +2,20 @@
 
 set -e
 
+source settings.env
+
 if [ ! "root" == `whoami` ]
 then
   echo "Usage: sudo $0 $@"
   exit 1
+fi
+
+if [ ! -n "${U_UNIT_IP}" ]
+then
+  echo "Which IP Address to give to this unit?"
+  echo "(you'll still need to modify other network info in '/etc/network/interfaces')"
+  echo "Example: 192.168.1.20"
+  read U_UNIT_IP
 fi
 
 overo-sdhc-partition $@
