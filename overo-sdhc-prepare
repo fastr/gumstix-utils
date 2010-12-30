@@ -18,7 +18,10 @@ then
   read U_UNIT_IP
 fi
 
+echo "partitioning... "
 overo-sdhc-partition $@
 read -p "*Remove* and *Reinsert* the SDHC card!     (then press a key *after* you do that)"
+echo "formatting... "
 overo-sdhc-format $@
+echo "popullating... "
 overo-sdhc-popullate $@
