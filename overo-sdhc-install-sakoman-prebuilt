@@ -4,17 +4,18 @@ set -e
 source settings.env
 
 MACHINE=${U_OE_MACHINE}
+BUILD_VER=${U_SAKOMAN_LATEST}
 
-FOLDER=${1}
-DEVICE=${2}
-SYSTEM=${3}
+DEVICE=${1}
+SYSTEM=${2}
 TMPDIR="/tmp/${MACHINE}-`random-string`"
 
 
-if [ ! -n "${DEVICE}" ] || [ ! -n "${FOLDER}" ] || [ ! "root" == "`whoami`" ]
+if [ ! -n "${DEVICE}" ] || [ ! "root" == "`whoami`" ]
 then
-  echo "Usage: sudo ${0} SAKOMAN_DATED_IMAGE_FOLDER /dev/SDX [ desktop | console (default) ]"
-  echo "Example: sudo ${0} ./${MACHINE}/201011150741 /dev/sdi console"
+  echo "Usage: sudo ${0} /dev/SDX [ desktop | console (default) ]"
+  echo "Example: sudo ${0} ./dev/sdi console"
+  echo "Note: set U_SAKOMAN_LATEST in 'settings.env' and then run 'over-image-download-sakoman' to get the images"
   exit 1
 fi
 
@@ -25,20 +26,20 @@ fi
 
 # TODO strip trailing slash
 
-cd ${FOLDER}
+cd ${MACHINE}/${BUILD_VER}
 overo-sdhc-partition ${DEVICE}
 read -p "*Remove* and *Reinsert* the SDHC card!     (then press a key *after* you do that)"
 overo-sdhc-format ${DEVICE}
 mkdir -p ${TMPDIR}
 mount ${DEVICE}1 ${TMPDIR}
 echo "Copying boot files (should only take a few seconds)"
-cp MLO-${MACHINE}-${FOLDER} ${TMPDIR}/MLO
-cp u-boot-${MACHINE}-${FOLDER}.bin ${TMPDIR}/u-boot.bin
-cp uImage-${MACHINE}-${FOLDER}.bin ${TMPDIR}/uImage
+cp MLO-${MACHINE}-${BUILD_VER} ${TMPDIR}/MLO
+cp u-boot-${MACHINE}-${BUILD_VER}.bin ${TMPDIR}/u-boot.bin
+cp uImage-${MACHINE}-${BUILD_VER}.bin ${TMPDIR}/uImage
 sync
 umount ${TMPDIR}
 mount ${DEVICE}2 ${TMPDIR}
 echo "Copying ${SYSTEM} image files (may take several minutes)"
-tar xf omap3-${SYSTEM}-image-${MACHINE}-${FOLDER}.tar.bz2 -C ${TMPDIR}
+tar xf omap3-${SYSTEM}-image-${MACHINE}-${BUILD_VER}.tar.bz2 -C ${TMPDIR}
 umount ${DEVICE}2
 rmdir ${TMPDIR}
