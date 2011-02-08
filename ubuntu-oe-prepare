@@ -1,0 +1,24 @@
+#!/bin/bash
+echo "Select NO to using dash instead of bash."
+echo "Press [enter] and then select [no]"
+read ANSWER
+sudo dpkg-reconfigure dash
+
+#Note 1: If you are using an Ubuntu distribution, it is likely that /bin/sh is linked to /bin/dash.
+#If this is the case, then you will need to change /bin/sh to link to /bin/bash.
+#Neglecting to do this will cause target system init file corruption and your build image will not boot!
+#Run "sudo dpkg-reconfigure dash" and answer no when asked whether you want to install dash as /bin/sh.
+
+
+sudo apt-get install \
+  git-core \
+  git-email \
+  build-essential \
+  diffstat \
+  texi2html \
+  texinfo \
+  cvs \
+  subversion \
+  gawk \
+  chrpath \
+  python-psyco
