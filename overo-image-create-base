@@ -10,7 +10,7 @@ fi
 
 if [ ! -n "${U_OE_HOME}" ] || [ ! -n "${U_OE_IMAGE}" ] || [ ! -n "${U_OE_IMAGE_DIR}" ] || [ ! -n "${U_IMAGE_ROOT}" ]  || [ ! -n "${U_IMAGE_BOOT}" ]
 then
-  echo '${U_OE_HOME} or ${U_OE_IMAGE} or ${U_IMAGE_ROOT} or ${U_IMAGE_BOOT} is not set'
+  echo '${U_OE_HOME} or ${U_OE_IMAGE} or ${U_IMAGE_ROOT} or ${U_IMAGE_BOOT} is not set in settings.env'
   exit 1
 fi
 
@@ -20,6 +20,7 @@ cd ${U_OE_HOME}/
 # Building the bitbake image
 echo "Building bitbake image."
 echo "This takes several hours the first time, but (usually) just a few minutes any subsequent time"
+# TODO git checkout ${U_OE_BRANCH}
 bitbake ${U_OE_IMAGE} 
 echo ""
 echo "Finished building ${U_OE_IMAGE}"
