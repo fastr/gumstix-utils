@@ -51,3 +51,8 @@ Scripts that I would like to get up eventually:
   * mkmachine - automate the create of a machine type (such as Overo + Tobi)
   * mkdistro - automate the creation of a distribution (such as Angstrom)
   * automate the creation of packaging a normal autotools/make created library
+
+Note
+====
+
+[Sakoman's build scripts](http://www.sakoman.com/category/7-gnome-daily-builds-r12.html) are also available.
