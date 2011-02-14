@@ -11,7 +11,7 @@ sudo rsync \
   --exclude='.git' \
   --exclude='.svn' \
   --exclude='.keep' \
-  ${U_IMAGE_SAUCE}/ \
+  ${U_IMAGE_OVERLAY}/ \
   ${U_IMAGE_ROOT}/
 
 sudo chmod go-rwx -R ${U_IMAGE_ROOT}/home/root/ # for .ssh

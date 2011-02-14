@@ -24,7 +24,7 @@ I also git-pull from a repository to build the latest version of some proprietar
     * /usr/local/
     * /opt/coolaj86/bin
 
-These files should be place in '${U_IMAGE_SAUCE}'
+These files should be place in '${U_IMAGE_OVERLAY}'
 '
 
 echo "${MSG}"
