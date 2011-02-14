@@ -14,13 +14,18 @@ then
   exit 1
 fi
 
-
+CURDIR=`pwd`
 cd ${U_OE_HOME}/
+if [ -n "${U_OE_CHECKOUT}" ]
+then
+  cd org.openembedded.dev
+  git checkout ${U_OE_CHECKOUT}
+  cd -
+fi
 
 # Building the bitbake image
 echo "Building bitbake image."
 echo "This takes several hours the first time, but (usually) just a few minutes any subsequent time"
-# TODO git checkout ${U_OE_BRANCH}
 bitbake ${U_OE_IMAGE} 
 echo ""
 echo "Finished building ${U_OE_IMAGE}"
@@ -35,16 +40,16 @@ echo ""
 echo "Finished building boot files"
 echo ""
 
-cd -
+cd ${CURDIR} # ${U_OE_HOME}
 
 
 # Create system Image
 # TODO ask for confirmation a mistake with 'rm -rf' would be a disaster
 echo "Recreating the root partition base (overlay must be added again afterwards)"
 echo "This shouldn't take more than a minute on a hard drive"
-echo "sudo rm -rf ${U_IMAGE_ROOT}"
+echo "sudo-ing 'tar xf ${U_OE_IMAGE_DIR}/${U_OE_IMAGE}-${U_OE_MACHINE}.tar.bz2 -C ${U_IMAGE_ROOT}/' to preserve 'root' permissions"
 sudo rm -rf ${U_IMAGE_ROOT}
-sudo mkdir -p ${U_IMAGE_ROOT}
+mkdir -p ${U_IMAGE_ROOT}
 sudo tar xf ${U_OE_IMAGE_DIR}/${U_OE_IMAGE}-${U_OE_MACHINE}.tar.bz2 -C ${U_IMAGE_ROOT}/
 echo ""
 echo "Finished copying root files to ${U_IMAGE_ROOT}"
@@ -54,14 +59,13 @@ echo ""
 # Create boot Image
 echo "Recreating the boot partition base"
 echo "This should take a mere second or two"
-echo "sudo rm -rf ${U_IMAGE_BOOT}"
-sudo rm -rf ${U_IMAGE_BOOT}
-sudo mkdir -p ${U_IMAGE_BOOT}
-sudo cp ${U_OE_IMAGE_DIR}/MLO-${U_OE_MACHINE} ${U_IMAGE_BOOT}/MLO 
-sudo cp ${U_OE_IMAGE_DIR}/u-boot-${U_OE_MACHINE}.bin ${U_IMAGE_BOOT}/u-boot.bin
-sudo cp ${U_OE_IMAGE_DIR}/uImage-${U_OE_MACHINE}.bin ${U_IMAGE_BOOT}/uImage
-sudo cp mkbootscript ${U_IMAGE_BOOT}/
-sudo cp bootscript.tpl ${U_IMAGE_BOOT}/
+rm -rf ${U_IMAGE_BOOT}
+mkdir -p ${U_IMAGE_BOOT}
+cp ${U_OE_IMAGE_DIR}/MLO-${U_OE_MACHINE} ${U_IMAGE_BOOT}/MLO 
+cp ${U_OE_IMAGE_DIR}/u-boot-${U_OE_MACHINE}.bin ${U_IMAGE_BOOT}/u-boot.bin
+cp ${U_OE_IMAGE_DIR}/uImage-${U_OE_MACHINE}.bin ${U_IMAGE_BOOT}/uImage
+cp mkbootscript ${U_IMAGE_BOOT}/
+cp bootscript.tpl ${U_IMAGE_BOOT}/
 echo ""
 echo "Finished copying boot files to ${U_IMAGE_BOOT}"
 echo ""
