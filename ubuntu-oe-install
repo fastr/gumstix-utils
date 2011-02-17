@@ -27,6 +27,7 @@ cat ${OE_HOME}/build/profile >> ~/.bashrc
 . ${OE_HOME}/build/profile
 
 cd ${OE_HOME}
+# TODO rm ${OE_HOME}/tmp -rf
 bitbake gcc-cross-sdk
 #bitbake omap3-console-image
 #bitbake u-boot-omap3
