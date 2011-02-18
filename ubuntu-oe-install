@@ -1,34 +1,56 @@
 #!/bin/bash
 
-OE_HOME=~/overo-oe
+DATE=`date +%F`
+OE_BITBAKE_VER="1.10.2"
+OVEROTOP=~/overo-oe
+OE_REPO=org.openembedded.dev
 
-mkdir -p ${OE_HOME}
-cd ${OE_HOME}
-
-
-git clone git://gitorious.org/gumstix-oe/mainline.git org.openembedded.dev
-cd org.openembedded.dev
-git checkout --track -b overo origin/overo
-git checkout ${U_OE_CHECKOUT}
-cd -
-
-cd ${OE_HOME}
-git clone git://git.openembedded.net/bitbake bitbake
-cd bitbake
-git checkout 1.10.2
-
-cd ${OE_HOME}
-cp -r org.openembedded.dev/contrib/gumstix/build .
+mkdir -p ${OVEROTOP}
 
 
-cp ~/.bashrc ~/bashrc.bak
-cat ${OE_HOME}/build/profile >> ~/.bashrc
+cd ${OVEROTOP}
+  if [ ! -e "${OE_REPO}/.git" ]
+  then
+    rm -rf "${OE_REPO}"
+    git clone git://gitorious.org/gumstix-oe/mainline.git ${OE_REPO}
+  fi
+  cd ${OE_REPO}
+    git fetch
+    git checkout --track -b overo origin/overo
+    git checkout ${U_OE_CHECKOUT}
+  cd -
+cd ~/
 
-. ${OE_HOME}/build/profile
 
-cd ${OE_HOME}
-# TODO rm ${OE_HOME}/tmp -rf
-bitbake gcc-cross-sdk
-#bitbake omap3-console-image
-#bitbake u-boot-omap3
-#bitbake x-load
+cd ${OVEROTOP}
+  if [ ! -e "bitbake/.git" ]
+  then
+    rm -rf bitbake
+    git clone git://git.openembedded.net/bitbake bitbake
+  fi
+  cd bitbake
+    git checkout ${OE_BITBAKE_VER}
+  cd -
+cd ~/
+
+
+cd ${OVEROTOP}
+  if [ ! -e "build" ]
+  then
+    cp -r ${OE_REPO}/contrib/gumstix/build ./
+  fi
+cd ~/
+
+
+cp ~/.bashrc ~/bashrc.${DATE}.bak
+cat ${OVEROTOP}/build/profile >> ~/.bashrc
+. ${OVEROTOP}/build/profile
+
+
+cd ${OVEROTOP}
+  # rm ./tmp -rf
+  bitbake gcc-cross-sdk
+  #bitbake omap3-console-image
+  #bitbake u-boot-omap3
+  #bitbake x-load
+cd ~/

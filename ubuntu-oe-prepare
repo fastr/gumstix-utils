@@ -1,4 +1,10 @@
 #!/bin/bash
+
+
+#Note 1: If you are using an Ubuntu distribution, it is likely that /bin/sh is linked to /bin/dash.
+#If this is the case, then you will need to change /bin/sh to link to /bin/bash.
+#Neglecting to do this will cause target system init file corruption and your build image will not boot!
+#Run "sudo dpkg-reconfigure dash" and answer no when asked whether you want to install dash as /bin/sh.
 HAS_BASH=`ls -lah /bin/sh | grep bash`
 if [ ! -n "${HAS_BASH}" ]
 then
@@ -9,13 +15,9 @@ then
   sudo dpkg-reconfigure dash
 fi
 
-#Note 1: If you are using an Ubuntu distribution, it is likely that /bin/sh is linked to /bin/dash.
-#If this is the case, then you will need to change /bin/sh to link to /bin/bash.
-#Neglecting to do this will cause target system init file corruption and your build image will not boot!
-#Run "sudo dpkg-reconfigure dash" and answer no when asked whether you want to install dash as /bin/sh.
 
-
-sudo apt-get install \
+sudo apt-get install --yes python-psyco 2>/dev/null # fails on ubuntu 64bit
+sudo apt-get install --yes \
   git-core \
   git-email \
   build-essential \
@@ -25,5 +27,4 @@ sudo apt-get install \
   cvs \
   subversion \
   gawk \
-  chrpath \
-  python-psyco
+  chrpath
