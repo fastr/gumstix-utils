@@ -1,8 +1,13 @@
 #!/bin/bash
-echo "Select NO to using dash instead of bash."
-echo "Press [enter] and then select [no]"
-read ANSWER
-sudo dpkg-reconfigure dash
+HAS_BASH=`ls -lah /bin/sh | grep bash`
+if [ ! -n "${HAS_BASH}" ]
+then
+  clear
+  echo "Select NO to using dash instead of bash."
+  echo "Press [enter] and then select [no]"
+  read NOTHING
+  sudo dpkg-reconfigure dash
+fi
 
 #Note 1: If you are using an Ubuntu distribution, it is likely that /bin/sh is linked to /bin/dash.
 #If this is the case, then you will need to change /bin/sh to link to /bin/bash.
