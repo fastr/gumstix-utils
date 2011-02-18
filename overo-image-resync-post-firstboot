@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+
+source settings.env
+
+if [ ! -n "${U_OE_IMAGE_DIR}" ] || [ ! -n "${U_IMAGE_ROOT}" ]  || [ ! -n "${U_IMAGE_BOOT}" ]
+then
+  echo '${U_IMAGE_ROOT} or ${U_IMAGE_BOOT} is not set in settings.env'
+  exit 1
+fi
+
+if [ ! -n "${U_UNIT_IP}" ]
+then
+  echo "What is the IP Address of the unit?"
+  echo "Example: 192.168.1.20"
+  read U_UNIT_IP
+fi
+
+sudo rsync --archive --verbose -h \
+  --delete \
+  --exclude=/dev \
+  --exclude=/sys \
+  --exclude=/proc \
+  --exclude=/media \
+  --exclude=/mnt \
+  --exclude=/var/volatile \
+  --exclude=/var/logs \
+  --exclude=/etc/udev/rules.d/70-persistent-net.rules \
+  root@${U_UNIT_IP}:/ \
+  ${U_IMAGE_ROOT}/
