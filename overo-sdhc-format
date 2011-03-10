@@ -3,10 +3,11 @@
 
 # set this script to exit at any point an operation returns failure
 set -e
+set -u
 
 source settings.env
 
-DEV=$1
+DEV=${1}
 DEFAULT_DEV=/dev/mmcblk0
 IS_OVERO=`cat /proc/cpuinfo | grep Overo || true`
 IS_MMCBLK=`echo ${DEV} | grep /dev/mmcblk || true`
@@ -21,25 +22,50 @@ then
     sleep 3
     echo "continuing..."
   else
-    echo -n 'Usage: `'$0' /dev/MICRO_SDHC_BLOCK_DEVICE`'
+    echo -n 'Usage: `'${0}' /dev/MICRO_SDHC_BLOCK_DEVICE`'
     exit 1;
   fi
 fi
 
-# About the target system
+# umount ${DEV}* doesn't usually work because once we try 
+# to unmount one that isn't mounted we give up and the rest 
+# may still be mounted.
+# This tries to unmount each one, one at a time
+ls ${DEV}* | while read PARTITIONS
+do
+  # Attempt to ensure that the disk is not in use
+  umount ${PARTITIONS} 2>/dev/null || true
+  umount ${PARTITIONS} 2>/dev/null || true
+done
+
+MOUNTED=`mount | grep ${DEV}` || true
+if [ -n "${MOUNTED}" ]
+then
+  echo "unable to completely unmount ${DEV}, the following devices still mounted"
+  echo "${MOUNTED}"
+  exit 1;
+fi
+
+echo "formating boot partition"
 # Matches mmcblk0p1 disk0s1 sdf1 - OpenEmbedded, Ubuntu, BSD
-BOOT=${DEV}'*1'
-ROOT=${DEV}'*2'
-
-# Attempt to ensure that the disk is not in use
-umount $DEV* 2>/dev/null || true
-umount $DEV* 2>/dev/null || true
-
+BOOT=${DEV}'1'
 # Prepare FAT boot partition
 # MLO *must* be installed first
-mkfs.vfat -F 32 $BOOT -n FAT
+mkfs.vfat -F 32 ${BOOT} -n FAT
 
-# Prepare rootfs
-mkfs.ext3 ${ROOT}
+echo "formatting all other partitions"
+# Format all the partitions except the first one as ext3
+NUMBER=1
+while true
+do
+  let NUMBER=${NUMBER}+1
+  PARTITION=`ls ${DEV}${NUMBER} 2>/dev/null` || true
+  if [ ! -n "${PARTITION}" ]
+  then
+    break
+  fi
+  echo "formatting ${PARTITION} as ext3"
+  mkfs.ext3 ${PARTITION} >/dev/null
+done
 
 echo "formatted sd card successfully"
