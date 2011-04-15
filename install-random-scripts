@@ -1,0 +1,2 @@
+sudo cp ./random-mac /usr/local/bin/
+sudo cp ./random-string /usr/local/bin/
